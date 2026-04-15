@@ -1,10 +1,13 @@
 Day 1
+
 On the first day, I established the foundation of the program.I designed a specialized Product class tailored for an appliance inventory, incorporating essential attributes such as unique product IDs, model names, unit prices, and current stock levels. To facilitate a professional user interface, I implemented the DisplayProduct() method, which standardizes how technical specifications and pricing for each appliance are rendered within the system menu.
 
 Day 2
+
 The second day was dedicated to building the interactive elements and ensuring the program could handle user activity reliably. I initialized an array to store multiple appliance objects and developed a structured loop to keep the Appliance Store menu active for the user. To maintain system stability, I integrated int.TryParse() to validate all numerical inputs and prevent the application from crashing due to typing errors. This phase focused heavily on creating a smooth user experience where the menu remains accessible until the user chooses to exit. These technical measures provided the necessary security to ensure the program operates professionally under various conditions.
 
 Day 3
+
 The final phase of development involved the integration of complex logic to manage the shopping cart and final transactions. I programmed the system to automatically calculate the total cost, verify that items are currently in stock, and subtract purchased units from the inventory. To provide a professional service experience, I also included a logic check that applies a 10% discount whenever a customer's total reaches ₱5,000 or more. The project concluded with the creation of an organized receipt system that lists all selected appliances and provides a clear final balance. This completed the transition from a simple list of items to a fully functioning point-of-sale application.
 
 AI Usage
