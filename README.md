@@ -8,6 +8,7 @@ Day 3
 On the final day, I completed the shopping cart features. The program is now capable of calculating totals, validating stock availability, and updating inventory after each transaction. I also implemented a receipt system that applies a 10% discount for purchases totaling ₱5000 or more. Furthermore, I ensured that duplicate items in the cart are handled correctly and improved the overall output presentation.
 
 AI Usage
+
 AI tools were utilized in this project to assist with debugging and improving the program’s logic.
 The prompts used included:
 
