@@ -1,6 +1,6 @@
 Day 1
 
-To begin the development process.I designed a I created a Product class to store appliance details, such as the ID, name, price, and stock levels. Additionally, I implemented a DisplayProduct() method to present the product details in the menu.
+To begin the development process.I created a Product class to store appliance details, such as the ID, name, price, and stock levels. Additionally, I implemented a DisplayProduct() method to present the product details in the menu.
 
 Day 2
 
