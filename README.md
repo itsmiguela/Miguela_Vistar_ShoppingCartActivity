@@ -1,18 +1,12 @@
 Day 1
-On the first day, I established the foundation of the program. I created a Product class to store essential information such as the product ID, name, price, and remaining stock. Additionally, I implemented a DisplayProduct() method to present the product details in the menu.
+On the first day, I established the foundation of the program.I designed a specialized Product class tailored for an appliance inventory, incorporating essential attributes such as unique product IDs, model names, unit prices, and current stock levels. To facilitate a professional user interface, I implemented the DisplayProduct() method, which standardizes how technical specifications and pricing for each appliance are rendered within the system menu.
 
 Day 2
-The second day focused on developing the core functionality of the system. I initialized an array to store the product objects and utilized a loop to display the store menu. I also implemented user input handling and applied int.TryParse() to ensure proper validation and prevent errors caused by invalid or non-numeric inputs.
+The second day was dedicated to building the interactive elements and ensuring the program could handle user activity reliably. I initialized an array to store multiple appliance objects and developed a structured loop to keep the Appliance Store menu active for the user. To maintain system stability, I integrated int.TryParse() to validate all numerical inputs and prevent the application from crashing due to typing errors. This phase focused heavily on creating a smooth user experience where the menu remains accessible until the user chooses to exit. These technical measures provided the necessary security to ensure the program operates professionally under various conditions.
 
 Day 3
-On the final day, I completed the shopping cart features. The program is now capable of calculating totals, validating stock availability, and updating inventory after each transaction. I also implemented a receipt system that applies a 10% discount for purchases totaling ₱5000 or more. Furthermore, I ensured that duplicate items in the cart are handled correctly and improved the overall output presentation.
+The final phase of development involved the integration of complex logic to manage the shopping cart and final transactions. I programmed the system to automatically calculate the total cost, verify that items are currently in stock, and subtract purchased units from the inventory. To provide a professional service experience, I also included a logic check that applies a 10% discount whenever a customer's total reaches ₱5,000 or more. The project concluded with the creation of an organized receipt system that lists all selected appliances and provides a clear final balance. This completed the transition from a simple list of items to a fully functioning point-of-sale application.
 
 AI Usage
 
-AI tools were utilized in this project to assist with debugging and improving the program’s logic.
-The prompts used included:
-
-Fix errors in my code
-
-AI provided guidance in organizing the code structure and refining the logic to meet the project requirements. It also helped in identifying and resolving errors.
-After using AI, I carefully reviewed and revised the code to ensure a complete understanding of its functionality before final submission.
+During the development lifecycle, I utilized AI tools to assist with technical debugging and to refine the overall logic of the source code. By using specific prompts to identify syntax errors, I was able to reorganize the program structure for better efficiency and clarity. Every suggestion provided by the AI was carefully reviewed and manually tested to confirm it met the specific requirements of the appliance store project. This collaborative approach allowed me to resolve complex bugs while maintaining a deep personal understanding of how the program functions. Final revisions were made to ensure the code was polished, professional, and ready for submission.
