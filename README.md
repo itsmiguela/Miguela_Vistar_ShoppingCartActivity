@@ -1,6 +1,6 @@
 Day 1
 
-On the first day, I established the foundation of the program.I designed a specialized Product class tailored for an appliance inventory, incorporating essential attributes such as unique product IDs, model names, unit prices, and current stock levels. To facilitate a professional user interface, I implemented the DisplayProduct() method, which standardizes how technical specifications and pricing for each appliance are rendered within the system menu.
+To begin the development process.I designed a I created a Product class to store appliance details, such as the ID, name, price, and stock levels. Additionally, I implemented a DisplayProduct() method to present the product details in the menu.
 
 Day 2
 
