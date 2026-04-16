@@ -6,10 +6,15 @@ As a student learning C#, I used AI as a guide to help me turn my ideas into act
 
 What questions did I ask?
 I asked the AI these specific questions to guide my development:
+
 "How can I use int.TryParse so my program doesn't crash if a user enters a letter instead of a number?".
+
 "Can you help me find the logic error in my C# shopping cart loop where my stock isn't updating correctly?".
+
 "How do I check if a product is already in my cart array so I can just add to the quantity instead of making a new row?".
+
 "What is the code to give a 10% discount if the total reaches ₱5,000 or more?".
+
 "How do I subtract the bought items from the RemainingStock after the user finishes their order?".
 
 What I changed or improved after using AI
