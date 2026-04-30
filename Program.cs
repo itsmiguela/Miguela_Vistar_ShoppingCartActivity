@@ -6,18 +6,20 @@ class Product
     public string Name;
     public double Price;
     public int Stock;
+    public string Category;
 
-    public Product(int id, string name, double price, int stock)
+    public Product(int id, string name, double price, int stock, string category)
     {
         Id = id;
         Name = name;
         Price = price;
         Stock = stock;
+        Category = category;
     }
 
     public void Display()
     {
-        Console.WriteLine(Id + ". " + Name + " - ₱" + Price + " (Stock: " + Stock + ")");
+        Console.WriteLine($"{Id}. [{Category}] {Name} - ₱{Price} (Stock: {Stock})");
     }
 }
 
@@ -27,11 +29,11 @@ class Program
     {
         Product[] products =
         {
-            new Product(1, "Washing Machine", 14999, 6),
-            new Product(2, "Refrigerator", 9999, 9),
-            new Product(3, "Television", 20990, 5),
-            new Product(4, "Stove", 6610, 10),
-            new Product(5, "Aircon", 38000, 8)
+            new Product(1, "Washing Machine", 14999, 6, "Appliances"),
+            new Product(2, "Refrigerator", 9999, 9, "Appliances"),
+            new Product(3, "Television", 20990, 5, "Electronics"),
+            new Product(4, "Stove", 6610, 10, "Appliances"),
+            new Product(5, "Aircon", 38000, 8, "Electronics")
         };
 
         int[] cartIds = new int[10];
@@ -41,7 +43,6 @@ class Program
 
         double[] history = new double[20];
         int historyCount = 0;
-
         int receiptNo = 1;
 
         while (true)
@@ -50,288 +51,238 @@ class Program
             Console.WriteLine("1. PART 1 - Basic Shopping");
             Console.WriteLine("2. PART 2 - Enhanced System");
             Console.WriteLine("3. Exit");
-
             Console.Write("Choose: ");
-            int mainChoice;
 
-            if (!int.TryParse(Console.ReadLine(), out mainChoice))
-            {
-                Console.WriteLine("Invalid input.");
-                continue;
-            }
-
+            if (!int.TryParse(Console.ReadLine(), out int mainChoice)) continue;
             if (mainChoice == 3) break;
 
-            // =====================
-            // PART 1
-            // =====================
-            if (mainChoice == 1)
+            if (mainChoice == 1 || mainChoice == 2)
             {
-                string choice = "Y";
+                RunShoppingSystem(mainChoice, products, cartIds, cartQty, cartTotal,
+                    ref cartCount, history, ref historyCount, ref receiptNo);
+            }
+        }
+    }
 
-                while (choice == "Y")
+    static void RunShoppingSystem(int part, Product[] products,
+        int[] cartIds, int[] cartQty, double[] cartTotal,
+        ref int cartCount, double[] history,
+        ref int historyCount, ref int receiptNo)
+    {
+        while (true)
+        {
+            Console.WriteLine(part == 1 ? "\n--- PART 1 MENU ---" : "\n==== PART 2 MENU ====");
+
+            if (part == 2)
+            {
+                Console.WriteLine("1. Search & Add Item\n2. View Cart\n3. Remove Item\n4. Update Quantity\n5. Clear Cart\n6. Checkout\n7. Order History\n8. Back");
+            }
+            else
+            {
+                Console.WriteLine("1. Add Item\n2. View Receipt & Exit Part 1");
+            }
+
+            Console.Write("Choose: ");
+            if (!int.TryParse(Console.ReadLine(), out int choice)) continue;
+
+            if (part == 2 && choice == 8) break;
+            if (part == 1 && choice == 2)
+            {
+                Checkout(products, cartIds, cartQty, cartTotal,
+                    ref cartCount, history, ref historyCount, ref receiptNo, false);
+                break;
+            }
+
+            // ADD ITEM
+            if (choice == 1)
+            {
+                if (cartCount >= 10)
                 {
-                    Console.WriteLine("\n--- PRODUCTS ---");
-                    for (int i = 0; i < products.Length; i++)
-                        products[i].Display();
-
-                    Console.Write("Enter product number: ");
-                    int num;
-
-                    if (!int.TryParse(Console.ReadLine(), out num) || num < 1 || num > products.Length)
-                    {
-                        Console.WriteLine("Invalid product.");
-                        continue;
-                    }
-
-                    Product p = products[num - 1];
-
-                    Console.Write("Enter quantity: ");
-                    int qty;
-
-                    if (!int.TryParse(Console.ReadLine(), out qty) || qty <= 0)
-                    {
-                        Console.WriteLine("Invalid quantity.");
-                        continue;
-                    }
-
-                    if (qty > p.Stock)
-                    {
-                        Console.WriteLine("Not enough stock.");
-                        continue;
-                    }
-
-                    cartIds[cartCount] = p.Id;
-                    cartQty[cartCount] = qty;
-                    cartTotal[cartCount] = qty * p.Price;
-                    cartCount++;
-
-                    p.Stock -= qty;
-
-                    Console.Write("Add another item? (Y/N): ");
-                    choice = ReadYN();
+                    Console.WriteLine("Cart full!");
+                    continue;
                 }
 
-                // SIMPLE RECEIPT
-                Console.WriteLine("\n--- RECEIPT ---");
-                double total = 0;
+                Console.WriteLine("\n--- PRODUCTS ---");
+                foreach (var p in products) p.Display();
 
+                Console.Write("\nSearch (optional): ");
+                string search = Console.ReadLine().ToLower();
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    Console.WriteLine("Results:");
+                    foreach (var p in products)
+                        if (p.Name.ToLower().Contains(search)) p.Display();
+                }
+
+                Console.Write("Enter Product ID: ");
+                if (int.TryParse(Console.ReadLine(), out int id))
+                {
+                    Product p = Find(products, id);
+                    if (p != null)
+                    {
+                        Console.Write("Quantity: ");
+                        if (int.TryParse(Console.ReadLine(), out int qty) && qty > 0 && qty <= p.Stock)
+                        {
+                            cartIds[cartCount] = p.Id;
+                            cartQty[cartCount] = qty;
+                            cartTotal[cartCount] = qty * p.Price;
+                            cartCount++;
+                            p.Stock -= qty;
+                            Console.WriteLine("Added.");
+                        }
+                        else Console.WriteLine("Invalid quantity.");
+                    }
+                }
+            }
+
+            // VIEW CART
+            else if (choice == 2 && part == 2)
+            {
+                Console.WriteLine("\n--- CART ---");
                 for (int i = 0; i < cartCount; i++)
                 {
                     Product p = Find(products, cartIds[i]);
-                    Console.WriteLine(p.Name + " x" + cartQty[i] + " - ₱" + cartTotal[i]);
-                    total += cartTotal[i];
+                    Console.WriteLine($"{i + 1}. {p.Name} x{cartQty[i]} - ₱{cartTotal[i]}");
                 }
-
-                Console.WriteLine("Total: ₱" + total);
-                cartCount = 0;
             }
 
-            // =====================
-            // PART 2
-            // =====================
-            else if (mainChoice == 2)
+            // REMOVE
+            else if (choice == 3 && part == 2)
             {
-                while (true)
+                Console.Write("Item #: ");
+                if (int.TryParse(Console.ReadLine(), out int idx) && idx > 0 && idx <= cartCount)
                 {
-                    Console.WriteLine("\n==== PART 2 MENU ====");
-                    Console.WriteLine("1. Add Item");
-                    Console.WriteLine("2. View Cart");
-                    Console.WriteLine("3. Remove Item");
-                    Console.WriteLine("4. Update Quantity");
-                    Console.WriteLine("5. Clear Cart");
-                    Console.WriteLine("6. Checkout");
-                    Console.WriteLine("7. Order History");
-                    Console.WriteLine("8. Back");
+                    Product p = Find(products, cartIds[idx - 1]);
+                    p.Stock += cartQty[idx - 1];
 
-                    Console.Write("Choose: ");
-                    int choice;
-
-                    if (!int.TryParse(Console.ReadLine(), out choice))
+                    for (int i = idx - 1; i < cartCount - 1; i++)
                     {
-                        Console.WriteLine("Invalid input.");
-                        continue;
+                        cartIds[i] = cartIds[i + 1];
+                        cartQty[i] = cartQty[i + 1];
+                        cartTotal[i] = cartTotal[i + 1];
                     }
+                    cartCount--;
+                }
+            }
 
-                    if (choice == 8) break;
+            // UPDATE QUANTITY (FIXED)
+            else if (choice == 4 && part == 2)
+            {
+                Console.Write("Item #: ");
+                if (int.TryParse(Console.ReadLine(), out int idx) && idx > 0 && idx <= cartCount)
+                {
+                    Product p = Find(products, cartIds[idx - 1]);
 
-                    // ADD ITEM
-                    if (choice == 1)
+                    Console.Write("New quantity: ");
+                    if (int.TryParse(Console.ReadLine(), out int newQty) && newQty > 0)
                     {
-                        Console.WriteLine("\n--- PRODUCTS ---");
-                        for (int i = 0; i < products.Length; i++)
-                            products[i].Display();
+                        int currentQty = cartQty[idx - 1];
+                        int availableStock = p.Stock + currentQty;
 
-                        Console.Write("Enter product number: ");
-                        int num;
-
-                        if (!int.TryParse(Console.ReadLine(), out num) || num < 1 || num > products.Length)
-                        {
-                            Console.WriteLine("Invalid product.");
-                            continue;
-                        }
-
-                        Product p = products[num - 1];
-
-                        Console.Write("Enter quantity: ");
-                        int qty;
-
-                        if (!int.TryParse(Console.ReadLine(), out qty) || qty <= 0)
-                        {
-                            Console.WriteLine("Invalid quantity.");
-                            continue;
-                        }
-
-                        if (qty > p.Stock)
+                        if (newQty > availableStock)
                         {
                             Console.WriteLine("Not enough stock.");
                             continue;
                         }
 
-                        cartIds[cartCount] = p.Id;
-                        cartQty[cartCount] = qty;
-                        cartTotal[cartCount] = qty * p.Price;
-                        cartCount++;
+                        p.Stock += currentQty;
+                        p.Stock -= newQty;
 
-                        p.Stock -= qty;
-                    }
+                        cartQty[idx - 1] = newQty;
+                        cartTotal[idx - 1] = newQty * p.Price;
 
-                    // VIEW CART
-                    else if (choice == 2)
-                    {
-                        Console.WriteLine("\n--- CART ---");
-                        for (int i = 0; i < cartCount; i++)
-                        {
-                            Product p = Find(products, cartIds[i]);
-                            Console.WriteLine((i + 1) + ". " + p.Name + " x" + cartQty[i]);
-                        }
-                    }
-
-                    // REMOVE
-                    else if (choice == 3)
-                    {
-                        Console.Write("Item #: ");
-                        int index;
-
-                        if (int.TryParse(Console.ReadLine(), out index) && index > 0 && index <= cartCount)
-                        {
-                            for (int i = index - 1; i < cartCount - 1; i++)
-                            {
-                                cartIds[i] = cartIds[i + 1];
-                                cartQty[i] = cartQty[i + 1];
-                                cartTotal[i] = cartTotal[i + 1];
-                            }
-                            cartCount--;
-                        }
-                    }
-
-                    // UPDATE
-                    else if (choice == 4)
-                    {
-                        Console.Write("Item #: ");
-                        int index;
-
-                        if (int.TryParse(Console.ReadLine(), out index) && index > 0 && index <= cartCount)
-                        {
-                            Console.Write("New quantity: ");
-                            int qty;
-
-                            if (int.TryParse(Console.ReadLine(), out qty))
-                            {
-                                Product p = Find(products, cartIds[index - 1]);
-
-                                if (qty > p.Stock)
-                                {
-                                    Console.WriteLine("Not enough stock.");
-                                    continue;
-                                }
-
-                                cartQty[index - 1] = qty;
-                                cartTotal[index - 1] = qty * p.Price;
-                            }
-                        }
-                    }
-
-                    // CLEAR
-                    else if (choice == 5)
-                    {
-                        cartCount = 0;
-                        Console.WriteLine("Cart cleared.");
-                    }
-
-                    // CHECKOUT
-                    else if (choice == 6)
-                    {
-                        double total = 0;
-
-                        for (int i = 0; i < cartCount; i++)
-                            total += cartTotal[i];
-
-                        double discount = total >= 5000 ? total * 0.10 : 0;
-                        double finalTotal = total - discount;
-
-                        Console.WriteLine("\n--- RECEIPT ---");
-                        Console.WriteLine("Receipt No: " + receiptNo);
-                        Console.WriteLine("Date: " + DateTime.Now);
-
-                        Console.WriteLine("Final Total: ₱" + finalTotal);
-
-                        double payment;
-                        while (true)
-                        {
-                            Console.Write("Enter payment: ");
-                            if (double.TryParse(Console.ReadLine(), out payment) && payment >= finalTotal)
-                                break;
-
-                            Console.WriteLine("Invalid or insufficient.");
-                        }
-
-                        Console.WriteLine("Change: ₱" + (payment - finalTotal));
-
-                        history[historyCount++] = finalTotal;
-                        receiptNo++;
-
-                        Console.WriteLine("\nLOW STOCK:");
-                        for (int i = 0; i < products.Length; i++)
-                        {
-                            if (products[i].Stock <= 5)
-                                Console.WriteLine(products[i].Name + " has " + products[i].Stock + " left.");
-                        }
-
-                        cartCount = 0;
-                    }
-
-                    // HISTORY
-                    else if (choice == 7)
-                    {
-                        Console.WriteLine("\n--- ORDER HISTORY ---");
-                        for (int i = 0; i < historyCount; i++)
-                        {
-                            Console.WriteLine("Order " + (i + 1) + " - ₱" + history[i]);
-                        }
+                        Console.WriteLine("Updated.");
                     }
                 }
+            }
+
+            // CLEAR
+            else if (choice == 5 && part == 2)
+            {
+                for (int i = 0; i < cartCount; i++)
+                    Find(products, cartIds[i]).Stock += cartQty[i];
+
+                cartCount = 0;
+                Console.WriteLine("Cart cleared.");
+            }
+
+            // CHECKOUT
+            else if (choice == 6)
+            {
+                Checkout(products, cartIds, cartQty, cartTotal,
+                    ref cartCount, history, ref historyCount, ref receiptNo, true);
+            }
+
+            // HISTORY
+            else if (choice == 7 && part == 2)
+            {
+                Console.WriteLine("\n--- HISTORY ---");
+                for (int i = 0; i < historyCount; i++)
+                    Console.WriteLine($"Receipt #{i + 1:D4} - ₱{history[i]}");
             }
         }
     }
 
-    static string ReadYN()
+    static void Checkout(Product[] products, int[] cartIds, int[] cartQty,
+        double[] cartTotal, ref int cartCount, double[] history,
+        ref int historyCount, ref int receiptNo, bool full)
     {
-        while (true)
+        if (cartCount == 0)
         {
-            string input = Console.ReadLine().ToUpper();
-            if (input == "Y" || input == "N") return input;
-            Console.Write("Enter Y or N: ");
+            Console.WriteLine("Cart empty.");
+            return;
         }
+
+        double total = 0;
+        for (int i = 0; i < cartCount; i++) total += cartTotal[i];
+
+        double discount = total >= 5000 ? total * 0.10 : 0;
+        double finalTotal = total - discount;
+
+        Console.WriteLine($"\nReceipt #{receiptNo:D4}");
+        Console.WriteLine($"Date: {DateTime.Now}");
+
+        for (int i = 0; i < cartCount; i++)
+        {
+            Product p = Find(products, cartIds[i]);
+            Console.WriteLine($"{p.Name} x{cartQty[i]} - ₱{cartTotal[i]}");
+        }
+
+        Console.WriteLine($"Total: ₱{total}");
+        Console.WriteLine($"Discount: ₱{discount}");
+        Console.WriteLine($"Final: ₱{finalTotal}");
+
+        if (full)
+        {
+            double payment;
+            while (true)
+            {
+                Console.Write("Payment: ");
+                if (double.TryParse(Console.ReadLine(), out payment) && payment >= finalTotal)
+                    break;
+                Console.WriteLine("Invalid.");
+            }
+
+            Console.WriteLine($"Payment: ₱{payment}");
+            Console.WriteLine($"Change: ₱{payment - finalTotal}");
+        }
+
+        history[historyCount++] = finalTotal;
+        receiptNo++;
+
+        Console.WriteLine("\nLOW STOCK:");
+        foreach (var p in products)
+            if (p.Stock <= 5)
+                Console.WriteLine($"{p.Name} - {p.Stock} left");
+
+        cartCount = 0;
     }
 
     static Product Find(Product[] products, int id)
     {
-        for (int i = 0; i < products.Length; i++)
-        {
-            if (products[i].Id == id)
-                return products[i];
-        }
+        foreach (var p in products)
+            if (p.Id == id) return p;
         return null;
     }
 }
