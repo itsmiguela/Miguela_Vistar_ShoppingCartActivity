@@ -1,22 +1,117 @@
-AI USAGE
+Enhance Shopping Cart Activity
 
-Why I used AI for these parts
+This project is a simple console-based shopping system made in C#.
+It allows users to browse products, add items to a cart, and complete purchases with a receipt.
 
-As a student learning C#, I used AI as a guide to help me turn my ideas into actual code. I specifically needed help with "input errors" because I didn't know how to stop the program from crashing when a user accidentally types a letter instead of a number. I also used it to figure out the logic for the shopping cart, like how to check for duplicate items and how to update the stock correctly. AI helped me find small mistakes in Visual Studio that were hard for me to spot.
+Part 2: Features
 
-What questions did I ask?
-I asked the AI these specific questions to guide my development:
+This version improves the system by making it more organized, accurate, and easier to use. It focuses on better cart control, correct stock handling, and a complete checkout process.
 
-"How can I use int.TryParse so my program doesn't crash if a user enters a letter instead of a number?".
+Product Display
+Show all products:
+Product Display
 
-"Can you help me find the logic error in my C# shopping cart loop where my stock isn't updating correctly?".
+Show all products:
+foreach (var p in products)
+{
+p.Display();
+}
 
-"How do I check if a product is already in my cart array so I can just add to the quantity instead of making a new row?".
+Search product by name:
+string search = Console.ReadLine().ToLower();
 
-"What is the code to give a 10% discount if the total reaches ₱5,000 or more?".
+foreach (var p in products)
+{
+if (p.Name.ToLower().Contains(search))
+p.Display();
+}
 
-"How do I subtract the bought items from the RemainingStock after the user finishes their order?".
+Product categories:
+Appliances
+Electronics
 
-What I changed or improved after using AI
+Cart Features
 
-After the AI gave me suggestions, I made several changes to make sure the code followed the project rules. I manually set the discount to start exactly at the ₱5,000 mark. I also moved the DisplayProduct() code into the Product class to keep it more organized. Finally, I wrote my own error messages like "Not enough stock available" and "Cart is full" to make the program easier for people to use.
+Add item to cart:
+cart[count] = selected;
+qty[count++] = q;
+
+Avoid duplicate items:
+int index = FindItem(cart, count, selected.Id);
+if (index != -1)
+qty[index] += q;
+
+Update quantity:
+int difference = newQty - oldQty;
+cart[u].RemainingStock -= difference;
+qty[u] = newQty;
+
+Remove item:
+cart[r].RemainingStock += qty[r];
+
+for (int i = r; i < count - 1; i++)
+{
+cart[i] = cart[i + 1];
+qty[i] = qty[i + 1];
+}
+count--;
+
+Clear cart:
+for (int i = 0; i < count; i++)
+cart[i].RemainingStock += qty[i];
+
+count = 0;
+Stock check:
+if (q > selected.RemainingStock)
+{
+Console.WriteLine("Not enough stock.");
+}
+
+Checkout Process
+Receipt output:
+Console.WriteLine($"{cart[i].Name} x{qty[i]} = ₱{sub:F2}");
+
+Discount (10% if ₱5000+):
+double discount = total >= 5000 ? total * 0.10 : 0;
+
+Payment validation:
+if (double.TryParse(Console.ReadLine(), out payment) && payment >= finalTotal)
+
+Change computation:
+Console.WriteLine($"Change: ₱{payment - finalTotal:F2}");
+
+Order History
+history[historyCount++] = new Order
+{
+ReceiptNo = receiptCounter - 1,
+Date = DateTime.Now,
+FinalTotal = finalTotal
+};
+Console.WriteLine($"Receipt #{history[i].ReceiptNo:0000} | {history[i].Date}");
+
+Stock System
+Reduce stock when buying:
+selected.RemainingStock -= q;
+
+Restore stock when removing:
+cart[r].RemainingStock += qty[r];
+
+Low stock alert:
+if (p.RemainingStock <= 5)
+{
+Console.WriteLine($"{p.Name} is low on stock.");
+}
+
+AI Usage
+
+AI was used as a guide to help improve the program, fix errors, and understand some coding logic.
+
+Questions asked:
+How to use TryParse for input validation
+How to manage cart items properly
+How to update stock correctly
+How to apply discounts
+How to validate payment
+
+Conclusion
+This project helped apply basic programming concepts such as arrays, loops, input validation, cart management, and stock control. It improved both coding logic and problem-solving skills in C#.
