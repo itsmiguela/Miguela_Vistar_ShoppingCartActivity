@@ -4,10 +4,10 @@ This project is a simple console-based shopping system made in C#.
 It allows users to browse products, add items to a cart, and complete purchases with a receipt.
 
 Part 2: Features
-
 This version improves the system by making it more organized, accurate, and easier to use. It focuses on better cart control, correct stock handling, and a complete checkout process.
 
 Product Display
+
 Show all products:
 Product Display
 
@@ -26,12 +26,13 @@ if (p.Name.ToLower().Contains(search))
 p.Display();
 }
 
+
 Product categories:
 Appliances
 Electronics
 
-Cart Features
 
+Cart Features
 Add item to cart:
 cart[count] = selected;
 qty[count++] = q;
@@ -41,10 +42,12 @@ int index = FindItem(cart, count, selected.Id);
 if (index != -1)
 qty[index] += q;
 
+
 Update quantity:
 int difference = newQty - oldQty;
 cart[u].RemainingStock -= difference;
 qty[u] = newQty;
+
 
 Remove item:
 cart[r].RemainingStock += qty[r];
@@ -56,6 +59,7 @@ qty[i] = qty[i + 1];
 }
 count--;
 
+
 Clear cart:
 for (int i = 0; i < count; i++)
 cart[i].RemainingStock += qty[i];
@@ -66,6 +70,8 @@ if (q > selected.RemainingStock)
 {
 Console.WriteLine("Not enough stock.");
 }
+
+
 
 Checkout Process
 Receipt output:
@@ -79,6 +85,7 @@ if (double.TryParse(Console.ReadLine(), out payment) && payment >= finalTotal)
 
 Change computation:
 Console.WriteLine($"Change: ₱{payment - finalTotal:F2}");
+
 
 Order History
 history[historyCount++] = new Order
@@ -102,8 +109,9 @@ if (p.RemainingStock <= 5)
 Console.WriteLine($"{p.Name} is low on stock.");
 }
 
-AI Usage
 
+
+AI Usage
 AI was used as a guide to help improve the program, fix errors, and understand some coding logic.
 
 Questions asked:
@@ -112,6 +120,8 @@ How to manage cart items properly
 How to update stock correctly
 How to apply discounts
 How to validate payment
+
+
 
 Conclusion
 This project helped apply basic programming concepts such as arrays, loops, input validation, cart management, and stock control. It improved both coding logic and problem-solving skills in C#.
